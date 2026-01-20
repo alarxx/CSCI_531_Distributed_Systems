@@ -245,6 +245,33 @@ public:
         return data;
     }
 
+
+    // --- remove ---
+public:
+    bool remove(const T& item) {
+        Node<T>* node = _head;
+
+        while (node != nullptr) {
+            if (node->data == item) {
+                Node<T>* prev = node->prev;
+                Node<T>* next = node->next;
+
+                if (prev) prev->next = next;
+                else _head = next;
+
+                if (next) next->prev = prev;
+                else _tail = prev;
+
+                delete node;
+                node = nullptr;
+                --_size;
+
+                return true;
+            }
+            node = node->next;
+        }
+        return false;
+    }
     // ------
 
 
@@ -376,13 +403,11 @@ int main(){
     ll.addLast(String("B"));
     ll.addLast(String("C"));
 
-    std::cout << (ll.get(0) == String("A")) << std::endl;
-    std::cout << (ll.get(0) == "A") << std::endl;
-    std::cout << (ll.get(0) == String("B")) << std::endl;
-    std::cout << (ll.get(0) == "B") << std::endl;
+    ll.remove(String("A"));
 
-    std::cout << ll.get(1) << std::endl;
-    std::cout << ll.get(2) << std::endl;
+    for(int i = 0; i < ll.size(); i++){
+        std::cout << ll.get(i) << std::endl;
+    }
 
     std::cout << "end ------------" << std::endl;
 }
