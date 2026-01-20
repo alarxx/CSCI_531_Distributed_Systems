@@ -80,8 +80,11 @@ public:
         Node<T> * node = _head;
         Node<T> * next;
         // for(int i = 0; i < _size; i++){
+        int i = 0;
         while(node != nullptr){
-            // std::cout << "deallocate Node{" << typeid(node->data).name() << "}" << std::endl;
+            std::cout << i << std::endl;
+            i++;
+            std::cout << "deallocate Node(" << node->data << "){" << typeid(node->data).name() << "}" << std::endl;
             next = node->next; // memorize
             delete node; node = nullptr;
             node = next;
@@ -254,6 +257,7 @@ public:
 
         while (node != nullptr) {
             if (node->data == item) {
+                std::cout << "Found node: " << node->data << "(" << node << ")," << " next: " << node->next << ", prev: " << node->prev << "\n";
                 Node<T>* prev = node->prev;
                 Node<T>* next = node->next;
 
@@ -263,8 +267,11 @@ public:
                 if (next) next->prev = prev;
                 else _tail = prev;
 
+                // node->next = nullptr;
+                // node->prev = nullptr;
                 delete node;
-                node = nullptr;
+                std::cout << "deleted " << node << "\n";
+                // node = nullptr;
                 --_size;
 
                 return true;
