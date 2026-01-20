@@ -348,6 +348,19 @@ public:
         return *this;
     }
 
+    bool operator==(const std::string& other) const noexcept {
+        return value == other;
+    }
+    bool operator==(const String& other) const noexcept {
+        return value == other.value;
+    }
+    bool operator!=(const String& other) const noexcept {
+        return value != other.value;
+    }
+    bool operator!=(const std::string& other) const noexcept {
+        return value != value;
+    }
+
     // Stream insertion operation <<
     friend std::ostream& operator<<(std::ostream& os, const String& s);
 };
@@ -362,8 +375,14 @@ int main(){
     ll.addLast(String("A"));
     ll.addLast(String("B"));
     ll.addLast(String("C"));
-    std::cout << ll.get(0) << std::endl;
+
+    std::cout << (ll.get(0) == String("A")) << std::endl;
+    std::cout << (ll.get(0) == "A") << std::endl;
+    std::cout << (ll.get(0) == String("B")) << std::endl;
+    std::cout << (ll.get(0) == "B") << std::endl;
+
     std::cout << ll.get(1) << std::endl;
     std::cout << ll.get(2) << std::endl;
+
     std::cout << "end ------------" << std::endl;
 }
