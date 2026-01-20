@@ -47,7 +47,7 @@ public:
 
         // Node(R && rvalue) : data(std::move(rvalue)), next(nullptr), prev(nullptr) {
         Node(R && rvalue) {
-            std::cout << "Node rvalue Constructor" << std::endl;
+            // std::cout << "Node rvalue Constructor" << std::endl;
             data = std::move(rvalue); // R's Move Assignment Operator
             next = nullptr;
             prev = nullptr;
@@ -78,7 +78,7 @@ public:
         Node<T> * next;
         // for(int i = 0; i < _size; i++){
         while(node != nullptr){
-            std::cout << "deallocate Node{" << typeid(node->data).name() << "}" << std::endl;
+            // std::cout << "deallocate Node{" << typeid(node->data).name() << "}" << std::endl;
             next = node->next; // memorize
             delete node; node = nullptr;
             node = next;
@@ -86,7 +86,7 @@ public:
     }
 
     int size(){
-        std::cout << "size()" << std::endl;
+        // std::cout << "size()" << std::endl;
         return _size;
     }
 
@@ -106,7 +106,7 @@ private:
         // Node<T> * new_node = new Node(item);
 
         if(_head == nullptr){
-            std::cout << "initial head node" << std::endl;
+            // std::cout << "initial head node" << std::endl;
             _head = new_node;
             _tail = _head;
         }
@@ -129,6 +129,13 @@ public:
         return addLast(new_node);
     }
     T& addLast(T && rvalue){ // 0 copy, 1 rvalue object
+        /*
+            ll.addLast(String("A"));
+                -> String Constructor(A)
+                -> Node rvalue Constructor
+                -> String Move Assignment Operator
+                -> ~String {nullstr0}
+        */
         // std::cout << "addLast(rvalue) (1)" << std::endl;
         // T item = std::move(rvalue); // 1 object which is stealed
         Node<T> * new_node = new Node(std::move(rvalue)); // 0 copy object
@@ -142,7 +149,7 @@ private:
     T& addFirst(Node<T> * new_node){
         // Node<T> * new_node = new Node(item);
         if(_head == nullptr){
-            std::cout << "initial head node" << std::endl;
+            // std::cout << "initial head node" << std::endl;
             _head = new_node;
             _tail = _head;
         }
@@ -182,7 +189,7 @@ public:
         + тут RVO, из-за чего не должна создаваться копия при возврате.
     */
     T removeLast(){
-        std::cout << "remove last, _size = (" << _size  << " -> " << _size - 1 << ")" << std::endl;
+        // std::cout << "remove last, _size = (" << _size  << " -> " << _size - 1 << ")" << std::endl;
 
         if(_size == 0){
             throw std::runtime_error("Error: cannot remove last, linked list is empty");
@@ -212,7 +219,7 @@ public:
 public:
     // remove: O(1)
     T removeFirst(){
-        std::cout << "remove first, _size = (" << _size  << " -> " << _size - 1 << ")" << std::endl;
+        // std::cout << "remove first, _size = (" << _size  << " -> " << _size - 1 << ")" << std::endl;
 
         if(_size == 0){
             throw std::runtime_error("Error: cannot remove first, linked list is empty");
@@ -308,58 +315,55 @@ public:
 class String {
 public:
     std::string value;
-    ~String(){ std::cout << "~String {" << value << "}" << std::endl; }
+    ~String(){
+        // std::cout << "~String {" << value << "}" << std::endl;
+    }
 
     String() = default;
     String(std::string value) : value(value) {
-        std::cout << "String Constructor(" << value << ")" << std::endl;
+        // std::cout << "String Constructor(" << value << ")" << std::endl;
     }
     String(String & other){
-        std::cout << "String Copy Constructor" << std::endl;
+        // std::cout << "String Copy Constructor" << std::endl;
         value = other.value;
     }
     String & operator = (String & other){
-        std::cout << "String Copy Assignment Operator" << std::endl;
+        // std::cout << "String Copy Assignment Operator" << std::endl;
         if(this != &other){
             value = other.value;
         }
         return *this;
     }
     String(String && other){
-        std::cout << "String Move Constructor" << std::endl;
+        // std::cout << "String Move Constructor" << std::endl;
         value = other.value;
         other.value = "nullstr0";
     }
     String & operator = (String && other){
-        std::cout << "String Move Assignment Operator" << std::endl;
+        // std::cout << "String Move Assignment Operator" << std::endl;
         if(this != &other){
             value = other.value;
             other.value = "nullstr0";
         }
         return *this;
     }
-};
 
+    // Stream insertion operation <<
+    friend std::ostream& operator<<(std::ostream& os, const String& s);
+};
+std::ostream& operator<<(std::ostream& os, const String& s) {
+    os << s.value;
+    return os;
+}
 
 int main(){
     std::cout << "start ------------" << std::endl;
-    std::string alphabet[] = {"A", "B", "C", "D", "E", "F"};
     LinkedList<String> ll;
-
-    for(int i = 0; i < 5; ++i){
-        std::cout << "start " << i << "------------" << std::endl;
-
-        String s(alphabet[i]);
-        // String Constructor(.)
-
-        String& t = ll.addLast( std::move(s) );
-        // Node rvalue Constructor
-        // String Move Assignment Operator (to node)
-
-        t.value += alphabet[i];
-        std::cout << ll.get(i).value << std::endl; // O(N)
-        std::cout << "s gonna be deleted; s.value: " << s.value << std::endl;
-        std::cout << "end " << i << "--------------" << std::endl;
-    }
+    ll.addLast(String("A"));
+    ll.addLast(String("B"));
+    ll.addLast(String("C"));
+    std::cout << ll.get(0) << std::endl;
+    std::cout << ll.get(1) << std::endl;
+    std::cout << ll.get(2) << std::endl;
     std::cout << "end ------------" << std::endl;
 }
