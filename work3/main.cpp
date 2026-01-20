@@ -205,11 +205,10 @@ public:
         else {
             _tail = tail->prev;
             _tail->next = nullptr; // до этого tail.prev.next = tail
-
-            delete tail; // Delete Memory Allocated for Node
-            tail = nullptr;
         }
 
+        delete tail; // Delete Memory Allocated for Node
+        tail = nullptr;
         --_size;
 
         return data; // RVO
@@ -235,11 +234,10 @@ public:
         else {
             _head = head->next;
             _head->prev = nullptr; // до этого tail.prev.next = tail
-
-            delete head;
-            head = nullptr;
         }
 
+        delete head;
+        head = nullptr;
         --_size;
 
         return data;
@@ -403,7 +401,10 @@ int main(){
     ll.addLast(String("B"));
     ll.addLast(String("C"));
 
-    ll.remove(String("A"));
+    // ll.remove(String("A"));
+    std::cout << "removed: " << ll.removeFirst() << std::endl;
+    std::cout << "removed: " << ll.removeFirst() << std::endl;
+    std::cout << "removed: " << ll.removeFirst() << std::endl;
 
     for(int i = 0; i < ll.size(); i++){
         std::cout << ll.get(i) << std::endl;
