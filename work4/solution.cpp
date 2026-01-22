@@ -48,6 +48,7 @@ public:
         outputFile.close();
     }
 
+    // Много потоков вписывают последовательно
     void write(std::string line) {
         { // RAII
             std::lock_guard<std::mutex> lk(m);
@@ -56,10 +57,11 @@ public:
         cv.notify_one();
     }
 
+    // 1 daemon thread обрабатывает то, что положили в que
     void listener(){
         while(isRunning){
             std::unique_lock<std::mutex> lk(m);
-            // while(!ready){} // instead of this
+            // while(que.empty()){} // instead of cpu burning
             // sleeps if empty, locks otherwise and processes queue
             cv.wait(lk, [&]()->bool{ return !que.empty() || !isRunning; });
 
